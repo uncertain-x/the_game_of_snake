@@ -33,3 +33,10 @@ snake_game/                                     ← Vivado project root director
 │       └── 06_timing.xdc                       ★ Timing exceptions (false paths, etc.)
 └── ... (other Vivado auto-generated directories, ignored by .gitignore)
 ```
+## Generate project automatically
+open the vivado to input this command in Tcl Console
+
+```
+cd ${your_repo_path}
+source ./scripts/create_project.tcl
+```
