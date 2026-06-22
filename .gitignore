@@ -2,6 +2,8 @@
 # website: https://www.xilinx.com/support/download.html
 
 # [home]
+*.xpr
+*.txt
 *.jou
 *.log
 *.debug
