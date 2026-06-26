@@ -11,7 +11,7 @@ entity game_tick is
         clk : in std_logic;
         reset : in std_logic; --1
        -- enable : in std_logic;
-        tick : out std_logic
+        tick : out std_logic  -- connected to sanke control
     );
 end entity game_tick;
 
