@@ -23,7 +23,7 @@ snake_game/                                     ← Vivado project root director
 │   │   │   └── seven_seg_controller.vhd        (7-segment display score)
 │   │   └── utils/                              ← Utility modules
 │   │       ├── game_tick.vhd                   (Game tick frequency divider)
-│   │       └── running_enable.vhd              (Run enable control)
+│   │       
 │   └── constrs_1/                              ← Constraints files directory
 │       ├── 01_clock.xdc                        ★ Clock constraints (loaded first)
 │       ├── 02_pins.xdc                         ★ Physical pin assignments
