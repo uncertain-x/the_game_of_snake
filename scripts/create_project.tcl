@@ -146,7 +146,13 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
-# Empty (no sources present)
+set source_files [list \
+  [file normalize "$origin_dir/srcs/display/vga_control.vhd"] \
+  [file normalize "$origin_dir/srcs/display/seven_seg_controller.vhd"] \
+  [file normalize "$origin_dir/srcs/food/food_control.vhd"] \
+]
+add_files -norecurse -fileset $obj $source_files
+set_property file_type {VHDL 2008} [get_files -of_objects $obj $source_files]
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
@@ -160,7 +166,10 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 # Set 'constrs_1' fileset object
 set obj [get_filesets constrs_1]
 
-# Empty (no sources present)
+set constraint_files [list \
+  [file normalize "$origin_dir/constrain/02_pins.xdc"] \
+]
+add_files -norecurse -fileset $obj $constraint_files
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
@@ -173,7 +182,12 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 
 # Set 'sim_1' fileset object
 set obj [get_filesets sim_1]
-# Empty (no sources present)
+set sim_files [list \
+  [file normalize "$origin_dir/testbenches/seven_seg_controller_tb.vhd"] \
+  [file normalize "$origin_dir/testbenches/food_control_tb.vhd"] \
+]
+add_files -norecurse -fileset $obj $sim_files
+set_property file_type {VHDL 2008} [get_files -of_objects $obj $sim_files]
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
