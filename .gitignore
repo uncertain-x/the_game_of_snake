@@ -105,3 +105,7 @@
 */*/*/bd/*/ip/*/*.tcl
 hw_handoff
 ipshared
+sim_build/
+
+### project docs (local only, not tracked)
+docs/
