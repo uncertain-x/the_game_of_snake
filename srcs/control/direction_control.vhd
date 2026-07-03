@@ -3,13 +3,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity direction_control is
     port (
-        clk: in  std_logic;
-        reset : in  std_logic;
+        clk: in std_logic;
+        reset : in std_logic;
 
-        btn_up : in  std_logic;
-        btn_down : in  std_logic;
-        btn_left : in  std_logic;
-        btn_right : in  std_logic;
+        btn_up : in std_logic;
+        btn_down : in std_logic;
+        btn_left : in std_logic;
+        btn_right : in std_logic;
 
         direction : out std_logic_vector(1 downto 0) --00 01 10 11 for snake control
     );
