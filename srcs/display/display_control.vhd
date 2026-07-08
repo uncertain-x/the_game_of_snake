@@ -21,7 +21,9 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL; 
+use IEEE.NUMERIC_STD.ALL;
+library work;
+use work.snake_body.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -38,7 +40,14 @@ entity display_control is
         clk : in std_logic;
         reset : in std_logic;
         
-        --temporary set for snake and food
+        -- snake
+        snake_x : in snake_x_array;
+        snake_y : in snake_y_array;
+        
+        -- food
+        food_x : in std_logic_vector(4 downto 0);
+        food_y : in std_logic_vector(3 downto 0);
+        
         
         -- VGA physical interface
         VGA_R : out std_logic_vector(3 downto 0);
@@ -143,11 +152,9 @@ begin
         
         -- drawing logic
         process(vga_clk)
-            --temporary varible for snake and food
-            variable food_x, food_y : integer := 9;
-            variable snake_head_x, snake_head_y : integer := 11;
-            variable snake_body_x : integer := 12;
-            variable snake_body_y : integer := 11;
+            -- variables for snake and food
+            variable snake_head_x, snake_head_y : integer;
+            variable snake_body_x, snake_body_y : integer;
             variable grid_x, grid_y : integer;
         begin
             if rising_edge(vga_clk) then
@@ -161,14 +168,23 @@ begin
                     next_rgb <= wall_color;
                 -- display the inside wall, game area
                 -- scan the coordinate and display the snake and food
-                elsif (grid_x = food_x) and (grid_y = food_y) then
+                elsif (grid_x = to_integer(unsigned(food_x))) and (grid_y = to_integer(unsigned(food_y))) then
                     next_rgb <= food_color;
-                elsif (grid_x = snake_head_x) and (grid_y = snake_head_y) then
-                    next_rgb <= snake_head_color;
-                elsif (grid_x = snake_body_x) and (grid_y = snake_body_y) then
-                    next_rgb <= snake_color;
                 else
                     next_rgb <= background_color;
+                    
+                    for i in 0 to MAX_SNAKE_LENGTH - 1 loop
+                        if snake_x(i) /= 0 and snake_y(i) /= 0 then
+                            if (grid_x = snake_x(i)) and (grid_y = snake_y(i)) then
+                                -- the snake head and body
+                                if i = 0 then
+                                    next_rgb <= snake_head_color;
+                                else
+                                    next_rgb <= snake_color;
+                                end if;
+                            end if;
+                        end if;
+                    end loop;
                 end if;
             end if;
         end process;

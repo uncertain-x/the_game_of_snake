@@ -221,6 +221,10 @@ begin
         port map (
             clk => clk,
             reset => reset,
+            snake_x => snake_x,
+            snake_y => snake_y,
+            food_x => food_x_slv,
+            food_y => food_y_slv,
             VGA_R => VGA_R,
             VGA_G => VGA_G,
             VGA_B => VGA_B,
