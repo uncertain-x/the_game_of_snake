@@ -38,5 +38,5 @@ open the vivado to input this command in Tcl Console
 
 ```
 cd ${your_repo_path}
-source ./scripts/create_project.tcl
+source ./scripts/snake_game.tcl
 ```
