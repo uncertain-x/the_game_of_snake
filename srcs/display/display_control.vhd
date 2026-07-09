@@ -43,6 +43,7 @@ entity display_control is
         -- snake
         snake_x : in snake_x_array;
         snake_y : in snake_y_array;
+        snake_len : in integer range 1 to MAX_SNAKE_LENGTH;
         
         -- food
         food_x : in std_logic_vector(4 downto 0);
@@ -156,6 +157,7 @@ begin
             variable snake_head_x, snake_head_y : integer;
             variable snake_body_x, snake_body_y : integer;
             variable grid_x, grid_y : integer;
+
         begin
             if rising_edge(vga_clk) then
                 video_on_delay <= w_video_on;
@@ -173,16 +175,19 @@ begin
                 else
                     next_rgb <= background_color;
                     
-                    for i in 0 to MAX_SNAKE_LENGTH - 1 loop
-                        if snake_x(i) /= 0 and snake_y(i) /= 0 then
-                            if (grid_x = snake_x(i)) and (grid_y = snake_y(i)) then
-                                -- the snake head and body
-                                if i = 0 then
-                                    next_rgb <= snake_head_color;
-                                else
-                                    next_rgb <= snake_color;
-                                end if;
+                    for i in snake_x'range loop
+                        if i >= snake_len then
+                            exit;
+                        end if;
+
+                        if (grid_x = snake_x(i)) and (grid_y = snake_y(i)) then
+                            -- the snake head and body
+                            if i = 0 then
+                                next_rgb <= snake_head_color;
+                            else
+                                next_rgb <= snake_color;
                             end if;
+                            exit;
                         end if;
                     end loop;
                 end if;

@@ -56,6 +56,11 @@ begin
                 len_reg <= 3;
 
                 --initial snake position, moving right
+                for i in 0 to MAX_SNAKE_LENGTH - 1 loop
+                snake_x_reg(i) <= 0;
+                snake_y_reg(i) <= 0;
+                end loop;
+
                 snake_x_reg(0)<= 5;
                 snake_y_reg(0)<= 7;
 

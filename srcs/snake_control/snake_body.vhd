@@ -7,6 +7,6 @@ package snake_body is
     constant MAX_SNAKE_LENGTH : integer := 234;
 
     -- define x and y coordinate
-    type snake_x_array is array (0 to MAX_SNAKE_LENGTH - 1) of integer range 1 to 18;
-    type snake_y_array is array (0 to MAX_SNAKE_LENGTH - 1) of integer range 1 to 13;
+    type snake_x_array is array (0 to MAX_SNAKE_LENGTH - 1) of integer range 0 to 19;
+    type snake_y_array is array (0 to MAX_SNAKE_LENGTH - 1) of integer range 0 to 14;
 end package snake_body;

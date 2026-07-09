@@ -223,6 +223,7 @@ begin
             reset => reset,
             snake_x => snake_x,
             snake_y => snake_y,
+            snake_len => snake_len,
             food_x => food_x_slv,
             food_y => food_y_slv,
             VGA_R => VGA_R,
