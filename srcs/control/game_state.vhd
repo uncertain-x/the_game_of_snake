@@ -29,13 +29,16 @@ architecture Behavioral of game_state is
 
     signal current_state : std_logic_vector(1 downto 0) := game_start;
     signal start_last : std_logic := '0';
-    signal start_pulse : std_logic := '0'; --detect button change from 0 to 1
+    -- signal start_pulse : std_logic := '0'; --detect button change from 0 to 1
 
 begin
 
     process(clk)
+        variable start_pulse : std_logic;
     begin
         if rising_edge(clk) then
+
+            start_pulse :=  '0';
 
             if reset = '1' then
                 current_state <= game_start;
@@ -45,9 +48,9 @@ begin
                 start_last <= start_btn;
 
                 if start_btn = '1' and start_last = '0' then
-                    start_pulse <= '1';
-                else
-                    start_pulse <= '0';
+                    start_pulse := '1';
+                --else
+                    --start_pulse := '0';
                 end if;
 
 
