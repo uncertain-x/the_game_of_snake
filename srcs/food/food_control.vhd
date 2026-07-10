@@ -30,7 +30,6 @@ architecture rtl of food_control is
   end function;
 begin
   process(clk)
-    variable rnd : unsigned(7 downto 0);
     variable idx : integer range 0 to 233;
   begin
     if rising_edge(clk) then
@@ -38,12 +37,17 @@ begin
         lfsr  <= x"A5";
         x_reg <= to_unsigned(10, x_reg'length);
         y_reg <= to_unsigned(7, y_reg'length);
-      elsif eat = '1' then
-        rnd := next_lfsr(lfsr);
-        idx := to_integer(rnd) mod 234;
-        lfsr  <= rnd;
-        x_reg <= to_unsigned(1 + (idx mod 18), x_reg'length);
-        y_reg <= to_unsigned(1 + (idx / 18), y_reg'length);
+      else
+        -- The LFSR free-runs at clk speed instead of stepping once per eat.
+        -- Stepping only on eat replays the exact same position sequence every
+        -- game; sampling a free-running LFSR ties each spawn to *when* the
+        -- player eats (millions of cycles apart), which is unpredictable.
+        lfsr <= next_lfsr(lfsr);
+        if eat = '1' then
+          idx := to_integer(lfsr) mod 234;
+          x_reg <= to_unsigned(1 + (idx mod 18), x_reg'length);
+          y_reg <= to_unsigned(1 + (idx / 18), y_reg'length);
+        end if;
       end if;
     end if;
   end process;
