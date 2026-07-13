@@ -31,7 +31,6 @@ proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
  "[file normalize "$origin_dir/snake_game.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci"]"\
- "[file normalize "$origin_dir/snake_game.srcs/utils_1/imports/synth_1/top_snake.dcp"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -321,28 +320,9 @@ set_property -name "file_type" -value "XDC" -objects $file_obj
 set obj [get_filesets constrs_1]
 set_property -name "target_part" -value "xc7a35tcpg236-1" -objects $obj
 
-# Set 'utils_1' fileset object
-set obj [get_filesets utils_1]
-# Import local files from the original project
-set files [list \
- [file normalize "${origin_dir}/snake_game.srcs/utils_1/imports/synth_1/top_snake.dcp" ]\
-]
-set imported_files ""
-foreach f $files {
-  lappend imported_files [import_files -fileset utils_1 $f]
-}
-
-# Set 'utils_1' fileset file properties for remote files
-# None
-
-# Set 'utils_1' fileset file properties for local files
-set file "synth_1/top_snake.dcp"
-set file_obj [get_files -of_objects [get_filesets utils_1] [list "*$file"]]
-set_property -name "netlist_only" -value "0" -objects $file_obj
-
-
-# Set 'utils_1' fileset properties
-set obj [get_filesets utils_1]
+# NOTE: the original Vivado-exported script imported an incremental synthesis
+# checkpoint (top_snake.dcp) here, but .dcp files are gitignored so the import
+# fails on every machine except the one that exported the script. Removed.
 
 set idrFlowPropertiesConstraints ""
 catch {
@@ -372,8 +352,6 @@ if { $obj != "" } {
 set obj [get_runs synth_1]
 set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7a35tcpg236-1" -objects $obj
-set_property -name "incremental_checkpoint" -value "$proj_dir/${_xil_proj_name_}.srcs/utils_1/imports/synth_1/top_snake.dcp" -objects $obj
-set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
 # set the current synth run

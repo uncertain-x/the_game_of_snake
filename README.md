@@ -37,6 +37,12 @@ snake_game/                                     ← Vivado project root director
 open the vivado to input this command in Tcl Console
 
 ```
-cd ${your_repo_path}
-source ./scripts/snake_game.tcl
+cd ${your_repo_path}/snake_game
+source ../scripts/snake_game.tcl
 ```
+
+Note: the script resolves all paths relative to the directory you `cd` into, and it
+expects to be sourced from `snake_game/` (where `snake_game.srcs/` lives). Sourcing it
+from the repo root will fail with "file does not exist" errors.
+If a previous run left a broken project behind, delete `snake_game/snake_game/` first —
+re-sourcing the script on top of an existing project errors out on `add_files`.
