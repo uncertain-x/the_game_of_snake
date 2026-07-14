@@ -75,9 +75,10 @@ begin
                         end if;
 
                     when game_over =>
-                        if start_pulse = '1' then
-                            current_state <= game_start;
-                        end if;
+                        -- if start_pulse = '1' then
+                        --     current_state <= game_start;
+                        -- end if;
+                        current_state <= game_over;
 
                     when others =>
                         current_state <= game_start;
