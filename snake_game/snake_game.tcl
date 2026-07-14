@@ -50,6 +50,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../srcs/food/food_control.vhd"]"\
  "[file normalize "$origin_dir/../srcs/display/seven_seg_controller.vhd"]"\
  "[file normalize "$origin_dir/../srcs/display/vga_control.vhd"]"\
+ "[file normalize "$origin_dir/../srcs/display/snake_menu_rom.vhd"]"\
  "[file normalize "$origin_dir/../srcs/top/top_snake.vhd"]"\
  "[file normalize "$origin_dir/../constrain/02_pins.xdc"]"\
  "[file normalize "$origin_dir/../srcs/constrs_1/seven_seg.xdc"]"\
@@ -194,6 +195,7 @@ set files [list \
  [file normalize "${origin_dir}/../srcs/food/food_control.vhd"] \
  [file normalize "${origin_dir}/../srcs/display/seven_seg_controller.vhd"] \
  [file normalize "${origin_dir}/../srcs/display/vga_control.vhd"] \
+ [file normalize "${origin_dir}/../srcs/display/snake_menu_rom.vhd"] \
  [file normalize "${origin_dir}/../srcs/top/top_snake.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
@@ -245,6 +247,11 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
 
 set file "$origin_dir/../srcs/display/vga_control.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
+
+set file "$origin_dir/../srcs/display/snake_menu_rom.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
