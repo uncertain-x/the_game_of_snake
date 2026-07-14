@@ -39,17 +39,19 @@ entity display_control is
     Port (
         clk : in std_logic;
         reset : in std_logic;
-        
+
         -- snake
         snake_x : in snake_x_array;
         snake_y : in snake_y_array;
         snake_len : in integer range 1 to MAX_SNAKE_LENGTH;
-        
+
         -- food
         food_x : in std_logic_vector(4 downto 0);
         food_y : in std_logic_vector(3 downto 0);
-        
-        
+
+        --game status
+        game_status : in std_logic_vector(1 downto 0);
+
         -- VGA physical interface
         VGA_R : out std_logic_vector(3 downto 0);
         VGA_G : out std_logic_vector(3 downto 0);
@@ -74,7 +76,7 @@ architecture Behavioral of display_control is
             pixel_y : out integer range 0 to 479
         );
     end component;
-    
+
     --add the precise clock from wiz
     component clk_wiz_0 is
         Port (
@@ -84,13 +86,22 @@ architecture Behavioral of display_control is
             clk_in1 : in std_logic
         );
     end component;
-    
+
+    --add the image rom to display images
+    component snake_menu_rom is
+        Port(
+            clk : in std_logic;
+            addr : in std_logic_vector(19 downto 0);
+            data : out std_logic_vector(11 downto 0)
+        );
+    end component;
+
     --the total size of vga(640 x 480) divides into 20 x 15 grids,
     --which each grid has 32 x 32 pixels.
     constant grid_width : integer := 20;
     constant grid_height : integer := 15;
     constant single_grid_size : integer := 32;
-    
+
     -- color definitions
     -- the color of wall sets gray
     -- the color of background sets black
@@ -102,7 +113,14 @@ architecture Behavioral of display_control is
     constant snake_head_color : std_logic_vector(11 downto 0) := x"ff0";
     constant snake_color : std_logic_vector(11 downto 0) := x"0f0";
     constant food_color : std_logic_vector(11 downto 0) := x"f00";
-    
+    --constant game_start_color : std_logic_vector(11 downto 0) := x"0ff";
+    constant game_paused_color : std_logic_vector(11 downto 0) := x"00f";
+    --constant game_over_color : std_logic_vector(11 downto 0) := x"f0f";
+
+    -- image process
+   signal rom_addr : std_logic_vector(19 downto 0);
+   signal rom_data : std_logic_vector(11 downto 0);
+
     --connect with VGA
     -- clk 25MHz for VGA display 25 x 640 x 480 = 60 Hz
     signal vga_clk : std_logic := '0';
@@ -119,14 +137,16 @@ architecture Behavioral of display_control is
     -- grid coordinate.
     --signal grid_x : integer range 0 to 19;
     --signal grid_y : integer range 0 to 14;
-    
+
     -- adapting to the read delay
     signal video_on_delay : std_logic := '0';
+    -- adapting to the delay for reading from rom
+    signal rom_data_delay : std_logic_vector(11 downto 0);
     -- prepare for next RGB display to avoid glitches(unstable noise)
     signal next_rgb : std_logic_vector(11 downto 0) := (others => '0');
 
 begin
-    
+
     -- clock from precise clock_wiz
     clk_wiz : clk_wiz_0
         Port map (
@@ -137,7 +157,7 @@ begin
         );
 
     vga_reset <= reset or (not locked_sig);
-    
+
     -- VGA timing
     vga_ctrl_timing : vga_control
         Port map (
@@ -150,21 +170,44 @@ begin
             pixel_x => w_pixel_x,
             pixel_y => w_pixel_y  
         );
-        
+
+    -- image display
+    image_rom : snake_menu_rom
+        Port map (
+            clk => vga_clk,
+            addr => rom_addr,
+            data => rom_data
+        );
+
         -- drawing logic
         process(vga_clk)
-            -- variables for snake and food
-            variable snake_head_x, snake_head_y : integer;
-            variable snake_body_x, snake_body_y : integer;
             variable grid_x, grid_y : integer;
-
+            variable rom_address : integer;
         begin
             if rising_edge(vga_clk) then
                 video_on_delay <= w_video_on;
-                
+
                 grid_x := w_pixel_x /single_grid_size;
                 grid_y := w_pixel_y / single_grid_size;
-                
+
+                rom_address := w_pixel_y * 640 + w_pixel_x;
+                rom_addr <= std_logic_vector(to_unsigned(rom_address, 20));
+
+                --next_rgb <= background_color;
+                -- 00 game start
+                -- 01 game running
+                -- 10 game paused
+                -- 11 game over
+                -- others for avoiding scenarios that never expect
+                case game_status is when "00" =>
+                -- display start image
+                rom_address := w_pixel_y * 640 + w_pixel_x;
+                rom_addr <= std_logic_vector(to_unsigned(rom_address, 20));
+                rom_data_delay <= rom_data;
+                next_rgb <= rom_data_delay;
+
+                when "01" =>
+                -- display running
                 -- display the wall
                 if (grid_x = 0) or (grid_x = 19) or (grid_y = 0) or (grid_y = 14) then
                     next_rgb <= wall_color;
@@ -174,14 +217,13 @@ begin
                     next_rgb <= food_color;
                 else
                     next_rgb <= background_color;
-                    
+
                     for i in snake_x'range loop
                         if i >= snake_len then
                             exit;
                         end if;
 
                         if (grid_x = snake_x(i)) and (grid_y = snake_y(i)) then
-                            -- the snake head and body
                             if i = 0 then
                                 next_rgb <= snake_head_color;
                             else
@@ -191,6 +233,21 @@ begin
                         end if;
                     end loop;
                 end if;
+
+                when "10" =>
+                -- display paused color
+                next_rgb <= game_paused_color;
+
+                when "11" =>
+                -- display over image
+                rom_address := 307200 + w_pixel_y * 640 + w_pixel_x;
+                rom_addr <= std_logic_vector(to_unsigned(rom_address, 20));
+                rom_data_delay <= rom_data;
+                next_rgb <= rom_data_delay;
+
+                when others =>
+                    next_rgb <= background_color;
+                end case;
             end if;
         end process;
 

@@ -226,6 +226,7 @@ begin
             snake_len => snake_len,
             food_x => food_x_slv,
             food_y => food_y_slv,
+            game_status => state_out,
             VGA_R => VGA_R,
             VGA_G => VGA_G,
             VGA_B => VGA_B,
