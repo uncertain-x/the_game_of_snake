@@ -2,7 +2,7 @@
 ## Please follow the structure to construct own function
 ```
 snake_game/                                     ← Vivado project root directory
-├── snake_game.xpr                              ← Project file (tracked by Git)
+├── 
 ├── srcs/                                       ← Source files directory
 │   ├── sources_1/                              ← Design source files
 │   │   ├── top/                                ← Top-level files
@@ -38,7 +38,7 @@ open the vivado to input this command in Tcl Console
 
 ```
 cd ${your_repo_path}/snake_game
-source ../scripts/snake_game.tcl
+source snake_game.tcl
 ```
 
 Note: the script resolves all paths relative to the directory you `cd` into, and it
