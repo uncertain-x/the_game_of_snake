@@ -10,8 +10,9 @@ end entity;
 
 architecture sim of food_control_tb is
   constant CLK_PERIOD : time := 10 ns;
-  -- worst-case search is one full walk of the 8-bit LFSR (255 states)
-  constant SEARCH_CYCLES : natural := 300;
+  -- the serial scan checks one snake segment per cycle: worst case is
+  -- 234 probe cells x up to 234 scan cycles each, so allow ~60k cycles
+  constant SEARCH_CYCLES : natural := 60_000;
   constant EAT_ROUNDS    : natural := 20;
 
   -- fake snake: rows y=1..6 fully occupied (108 cells) + slot 108 holds the
